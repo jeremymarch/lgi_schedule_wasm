@@ -1,0 +1,15 @@
+[package]
+name = "lgi_schedule_wasm"
+version = "0.1.0"
+edition = "2024"
+wasm-opt = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2.100"
+
+[dependencies.web-sys]
+version = "0.3.77"
+features = ['Document', 'Element', 'HtmlElement', 'Node', 'Window']
