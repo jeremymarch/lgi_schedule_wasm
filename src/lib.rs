@@ -83,14 +83,17 @@ pub fn create_table() {
 
 #[wasm_bindgen]
 pub fn create_table2() {
-    let start = "2025-06-09 08:30[America/New_York]";
+    let start_date = "2025-06-09";
+    //let juneteenth = "2025-06-19 08:30[America/New_York]".parse().unwrap();
+    //let julyfour = "2025-07-04 08:30[America/New_York]".parse().unwrap();
+    let holidays = vec![String::from("2025-06-19"), String::from("2025-07-04")];
     let faculty = vec![
         String::from("BP"),
         String::from("JM"),
         String::from("HH"),
         String::from("EBH"),
     ];
-    let summer = create_summer(start, faculty).unwrap();
+    let summer = create_summer(start_date, holidays, faculty).unwrap();
 
     let window = web_sys::window().expect("no global `window` exists");
     let document = window.document().expect("should have a document on window");
@@ -153,6 +156,10 @@ pub fn create_table2() {
                     td.set_inner_html(&day)
                 }
                 _ => (),
+            }
+            if col == 2 && row.day.is_empty() {
+                let _ = td.set_attribute("colspan", "8");
+                break;
             }
         }
     }
