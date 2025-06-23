@@ -1,3 +1,4 @@
+use jiff::civil::Weekday;
 use lgi_schedule::*;
 use wasm_bindgen::prelude::*;
 
@@ -15,20 +16,11 @@ fn main() -> Result<(), JsValue> {
     val.set_inner_html("Hello from Rust!");
     body.append_child(&val)?;
 
-    let start = "2025-06-09 08:30[America/New_York]";
-    let faculty = vec![
-        String::from("BP"),
-        String::from("JM"),
-        String::from("HH"),
-        String::from("EBH"),
-    ];
-    let summer = create_summer(start, faculty).unwrap();
-
-    create_table();
+    create_table2();
 
     Ok(())
 }
-
+/*
 #[wasm_bindgen]
 pub fn create_table() {
     let window = web_sys::window().expect("no global `window` exists");
@@ -86,6 +78,45 @@ pub fn create_table() {
     }
 
     body.append_child(&table).unwrap();
+}
+*/
+
+#[wasm_bindgen]
+pub fn create_table2() {
+    let start = "2025-06-09 08:30[America/New_York]";
+    let faculty = vec![
+        String::from("BP"),
+        String::from("JM"),
+        String::from("HH"),
+        String::from("EBH"),
+    ];
+    let summer = create_summer(start, faculty).unwrap();
+
+    let window = web_sys::window().expect("no global `window` exists");
+    let document = window.document().expect("should have a document on window");
+    let body = document.body().expect("document should have a body");
+
+    let mut table = document.create_element("table").unwrap();
+
+    let mut week_num = 1;
+    for row in &summer.days_array {
+        if row.date.weekday() == Weekday::Monday {
+            table = document.create_element("table").unwrap();
+            table.set_class_name(format!("week-table week{}", week_num).as_str());
+            body.append_child(&table).unwrap();
+            week_num += 1;
+        }
+        let tr = document.create_element("tr").unwrap();
+        table.append_child(&tr).unwrap();
+        for col in 0..9 {
+            let td = document.create_element("td").unwrap();
+            tr.append_child(&td).unwrap();
+            match col {
+                1 => td.set_inner_html(&get_weekday(row.date.weekday())),
+                _ => (),
+            }
+        }
+    }
 }
 
 #[wasm_bindgen]

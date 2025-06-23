@@ -2,13 +2,14 @@
 name = "lgi_schedule_wasm"
 version = "0.1.0"
 edition = "2024"
-wasm-opt = false
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-lgi_schedule = { path = "../" }
+lgi_schedule = { path = "../lgi_schedule" }
+serde = { version = "1.0.219", features = ["derive"] }
+jiff = { version = "0.2.0", features = ["js", "serde"] }
 
 wasm-bindgen = "0.2.100"
 [dependencies.web-sys]
