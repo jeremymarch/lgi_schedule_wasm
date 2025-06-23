@@ -109,7 +109,7 @@ pub fn create_table2() {
             table.append_child(&tr).unwrap();
             let td = document.create_element("td").unwrap();
             tr.append_child(&td).unwrap();
-            td.set_inner_html("Week 1");
+            td.set_inner_html(format!("Week {}", week_num).as_str());
             let _ = td.set_attribute("colspan", "9");
 
             let tr = document.create_element("tr").unwrap();
@@ -123,9 +123,9 @@ pub fn create_table2() {
                     2 => td.set_inner_html("8:30 a.m."),
                     3 => td.set_inner_html("9:30 a.m."),
                     4 => td.set_inner_html("10:40 a.m."),
-                    5 => td.set_inner_html("12:15 a.m."),
-                    6 => td.set_inner_html("1:00 p.m --------"),
-                    7 => td.set_inner_html("---------- 4:00 p. m."),
+                    5 => td.set_inner_html("12:15 p.m."),
+                    6 => td.set_inner_html("1:00 p.m. -------- "),
+                    7 => td.set_inner_html(" ---------- 4:00 p.m."),
                     8 => td.set_inner_html("stats"),
                     _ => (),
                 }
@@ -139,7 +139,19 @@ pub fn create_table2() {
             let td = document.create_element("td").unwrap();
             tr.append_child(&td).unwrap();
             match col {
-                1 => td.set_inner_html(&get_weekday(row.date.weekday())),
+                1 => {
+                    let day = format!(
+                        "{}<br>{}{}",
+                        get_weekday(row.date.weekday()),
+                        row.date.strftime("%B %d").to_string(),
+                        if row.day.is_empty() {
+                            String::from("")
+                        } else {
+                            format!("<br>Day {}", row.day)
+                        }
+                    );
+                    td.set_inner_html(&day)
+                }
                 _ => (),
             }
         }
