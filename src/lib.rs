@@ -105,6 +105,7 @@ pub fn create_table2() {
 
             let tr = document.create_element("tr").unwrap();
             table.append_child(&tr).unwrap();
+
             let td = document.create_element("td").unwrap();
             tr.append_child(&td).unwrap();
             td.set_inner_html(format!("Week {}", week_num).as_str());
@@ -132,24 +133,47 @@ pub fn create_table2() {
             week_num += 1;
         }
         let tr = document.create_element("tr").unwrap();
+        tr.set_class_name(get_weekday(row.date.weekday()).to_lowercase().as_str());
         table.append_child(&tr).unwrap();
         for col in 0..9 {
             let td = document.create_element("td").unwrap();
             tr.append_child(&td).unwrap();
             match col {
+                0 => {
+                    td.set_class_name("quizcolumn");
+                    td.set_inner_html(row.quiz_grader.as_str());
+                }
                 1 => {
                     let day = format!(
                         "{}<br>{}{}",
                         get_weekday(row.date.weekday()),
-                        row.date.strftime("%B %d").to_string(),
+                        row.date.strftime("%B %-d").to_string(),
                         if row.day.is_empty() {
                             String::from("")
                         } else {
                             format!("<br>Day {}", row.day)
                         }
                     );
-                    td.set_inner_html(&day)
+                    td.set_inner_html(&day);
+                    td.set_class_name("daycolumn");
                 }
+                2 => td.set_class_name("morningoptionalcolumn"),
+                3 => {
+                    td.set_class_name("drill1column");
+                    td.set_inner_html(get_drill_col(&row.drill1).as_str());
+                }
+                // quizzes
+                // find self-correcting
+                // 7-10 schedule
+                4 => {
+                    td.set_class_name("drill2column");
+                    td.set_inner_html(get_drill_col(&row.drill2).as_str());
+                }
+                5 => td.set_class_name("noonoptionalcolumn"),
+                6 => td.set_class_name("lecturecolumn"),
+                7 => td.set_class_name("vocnotescolumn"),
+                8 => td.set_class_name("statscolumn"),
+
                 _ => (),
             }
             if col == 2 && row.day.is_empty() {
@@ -157,6 +181,14 @@ pub fn create_table2() {
                 break;
             }
         }
+    }
+}
+
+fn get_drill_col(fac: &Vec<String>) -> String {
+    match fac.len() {
+        2 => format!("E - {}<br>F - {}", fac[0], fac[1]),
+        3 => format!("E - {}<br>F/G - {}<br>H - {}", fac[0], fac[1], fac[2]),
+        _ => String::from(""),
     }
 }
 
