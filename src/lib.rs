@@ -157,7 +157,14 @@ pub fn create_table2() {
                     td.set_inner_html(&day);
                     td.set_class_name("daycolumn");
                 }
-                2 => td.set_class_name("morningoptionalcolumn"),
+                2 => {
+                    td.set_class_name("morningoptionalcolumn");
+                    td.set_inner_html(
+                        &row.morning_optional
+                            .clone()
+                            .unwrap_or_else(|| "".to_string()),
+                    );
+                }
                 3 => {
                     td.set_class_name("drill1column");
                     td.set_inner_html(get_drill_col(&row.drill1).as_str());
@@ -169,9 +176,18 @@ pub fn create_table2() {
                     td.set_class_name("drill2column");
                     td.set_inner_html(get_drill_col(&row.drill2).as_str());
                 }
-                5 => td.set_class_name("noonoptionalcolumn"),
-                6 => td.set_class_name("lecturecolumn"),
-                7 => td.set_class_name("vocnotescolumn"),
+                5 => {
+                    td.set_class_name("noonoptionalcolumn");
+                    td.set_inner_html(&row.noon_optional1.clone());
+                }
+                6 => {
+                    td.set_class_name("lecturecolumn");
+                    td.set_inner_html(&row.lecture.clone());
+                }
+                7 => {
+                    td.set_class_name("vocnotescolumn");
+                    td.set_inner_html(&row.voc_notes.clone());
+                }
                 8 => td.set_class_name("statscolumn"),
 
                 _ => (),
