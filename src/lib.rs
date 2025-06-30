@@ -87,7 +87,19 @@ pub fn create_table2() {
     //let juneteenth = "2025-06-19 08:30[America/New_York]".parse().unwrap();
     //let julyfour = "2025-07-04 08:30[America/New_York]".parse().unwrap();
     let holidays = vec!["2025-06-19", "2025-07-04"];
-    let faculty = vec!["BP", "JM", "HH", "EBH"];
+    let faculty = vec![
+        vec!["BP", "JM", "HH", "EBH"],
+        vec!["BP", "JM", "HH", "EBH"],
+        vec!["BP", "JM", "HH", "EBH"],
+        vec!["BP", "JM", "EBH"],
+        vec!["BP", "JM", "EBH"],
+        vec!["BP", "JM", "EBH"],
+        vec!["ABF", "JM", "EBH"],
+        vec!["ABF", "JM", "EBH"],
+        vec!["ABF", "JM", "EBH"],
+        vec!["ABF", "JM", "EBH"],
+        vec!["ABF", "JM", "EBH"],
+    ];
     let summer = create_summer(start_date, holidays, faculty).unwrap();
 
     let window = web_sys::window().expect("no global `window` exists");
