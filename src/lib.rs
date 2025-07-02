@@ -7,14 +7,14 @@ use wasm_bindgen::prelude::*;
 fn main() -> Result<(), JsValue> {
     // Use `web_sys`'s global `window` function to get a handle on the global
     // window object.
-    let window = web_sys::window().expect("no global `window` exists");
-    let document = window.document().expect("should have a document on window");
-    let body = document.body().expect("document should have a body");
+    // let window = web_sys::window().expect("no global `window` exists");
+    // let document = window.document().expect("should have a document on window");
+    // let body = document.body().expect("document should have a body");
 
     // Manufacture the element we're gonna append
-    let val = document.create_element("p")?;
-    val.set_inner_html("Hello from Rust!");
-    body.append_child(&val)?;
+    // let val = document.create_element("p")?;
+    // val.set_inner_html("Hello from Rust!");
+    // body.append_child(&val)?;
 
     create_table2();
 
@@ -99,6 +99,11 @@ pub fn create_table2() {
         vec!["ABF", "JM", "EBH"],
         vec!["ABF", "JM", "EBH"],
         vec!["ABF", "JM", "EBH"],
+    ];
+
+    let lectures = vec![
+        "EBH", "JM", "HH", "EBH", "HH", "JM", "BP", "HH", "JM", "HH", "BP", "EBH", "JM", "EBH",
+        "JM", "BP", "EBH", "BP", "JM", "EBH", "BP", "EBH", "JM",
     ];
     let summer = create_summer(start_date, holidays, faculty).unwrap();
 
@@ -243,7 +248,12 @@ pub fn create_table2() {
                     }
                     5 => {
                         td.set_class_name("noonoptionalcolumn");
-                        td.set_inner_html(&row.noon_optional1.clone());
+                        td.set_inner_html(&get_noon_optional_col(
+                            &row.noon_optional1_title,
+                            &row.noon_optional1,
+                            &row.noon_optional2_title,
+                            &row.noon_optional2,
+                        ));
                     }
                     6 => {
                         if row.friday_review1.len() > 0 {
@@ -275,11 +285,34 @@ pub fn create_table2() {
                 }
                 if col == 2 && row.day < 1 {
                     let _ = td.set_attribute("colspan", "8");
+                    if let Some(o) = row.other.clone() {
+                        td.set_inner_html(&o);
+                    }
                     break;
                 }
             }
         }
     }
+}
+
+fn get_noon_optional_col(
+    title1: &Option<String>,
+    fac1: &Option<String>,
+    title2: &Option<String>,
+    fac2: &Option<String>,
+) -> String {
+    let mut title = String::from("");
+    if let Some(t) = title1
+        && let Some(f) = fac1
+    {
+        title = format!("(optional)<br>{} - {}", t, f);
+    }
+    if let Some(t) = title2
+        && let Some(f) = fac2
+    {
+        title.push_str(format!("<br>{} - {}", t, f).as_str());
+    }
+    title
 }
 
 fn get_drill_col(fac: &Vec<String>) -> String {
