@@ -407,10 +407,16 @@ pub fn create_table2() {
                     _ => (),
                 }
                 if col == 2 && row.day < 1 {
-                    let _ = td.set_attribute("colspan", "8");
+                    let _ = td.set_attribute("colspan", "6");
                     if let Some(o) = row.other.clone() {
                         td.set_inner_html(&o);
                     }
+
+                    let td = document.create_element("td").unwrap();
+                    td.set_class_name("statscolumn");
+                    get_stat_table(&document, &td, row.get_stats());
+                    tr.append_child(&td).unwrap();
+
                     break;
                 }
             }
