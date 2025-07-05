@@ -1,6 +1,8 @@
 use jiff::civil::Weekday;
 use lgi_schedule::*;
 use wasm_bindgen::prelude::*;
+use web_sys::Document;
+use web_sys::Element;
 
 // Called when the Wasm module is instantiated
 #[wasm_bindgen(start)]
@@ -123,7 +125,7 @@ pub fn create_table2() {
     let mut table = document.create_element("table").unwrap();
 
     let mut week_num = 1;
-    for row in &summer.days_array {
+    for row in &summer.days {
         if row.date.weekday() == Weekday::Monday {
             table = document.create_element("table").unwrap();
             table.set_class_name(format!("week-table week{week_num}").as_str());
@@ -216,9 +218,10 @@ pub fn create_table2() {
                     }
                     7 => {
                         td.set_class_name("statscolumn");
-                        let v = row.get_stats();
-                        let o = format!("{v:?}");
-                        td.set_inner_html(&o);
+                        get_stat_table(&document, &td, row.get_stats());
+                        // let v = row.get_stats();
+                        // let o = format!("{v:?}");
+                        // td.set_inner_html(&o);
                     }
                     _ => (),
                 }
@@ -277,9 +280,10 @@ pub fn create_table2() {
                         let td = document.create_element("td").unwrap();
 
                         td.set_class_name("statscolumn");
-                        let v = row.get_stats();
-                        let o = format!("{v:?}");
-                        td.set_inner_html(&o);
+                        // let v = row.get_stats();
+                        // let o = format!("{v:?}");
+                        // td.set_inner_html(&o);
+                        get_stat_table(&document, &td, row.get_stats());
 
                         tr.append_child(&td).unwrap();
                     }
@@ -371,9 +375,34 @@ pub fn create_table2() {
                     }
                     8 => {
                         td.set_class_name("statscolumn");
-                        let v = row.get_stats();
-                        let o = format!("{v:?}");
-                        td.set_inner_html(&o);
+                        // let v = row.get_stats();
+                        // let o = format!("{v:?}");
+                        // td.set_inner_html(&o);
+                        //
+                        get_stat_table(&document, &td, row.get_stats());
+
+                        // let stat_table = document.create_element("table").unwrap();
+                        // stat_table.set_class_name("stattable");
+                        // td.append_child(&stat_table).unwrap();
+                        // //headers
+                        // let stat_row = document.create_element("tr").unwrap();
+                        // stat_table.append_child(&stat_row).unwrap();
+                        // let stats: Vec<(String, u32)> = row.get_stats();
+                        // for stat_fac in stats.clone() {
+                        //     let stat_td = document.create_element("td").unwrap();
+                        //     stat_row.append_child(&stat_td).unwrap();
+                        //     stat_td.set_inner_html(&stat_fac.0);
+                        // }
+
+                        // //counts
+                        // let stat_row = document.create_element("tr").unwrap();
+                        // stat_table.append_child(&stat_row).unwrap();
+                        // for stat_fac in stats.clone() {
+                        //     let stat_td = document.create_element("td").unwrap();
+                        //     stat_row.append_child(&stat_td).unwrap();
+
+                        //     stat_td.set_inner_html(&stat_fac.1.to_string());
+                        // }
                     }
                     _ => (),
                 }
@@ -422,6 +451,31 @@ fn get_review_col(fac: &[String], day: u32) -> String {
         format!("Review<br>E/F - {}<br>G/H - {}", fac[0], fac[1])
     } else {
         format!("Review<br>E - {}<br>F - {}", fac[0], fac[1])
+    }
+}
+
+fn get_stat_table(document: &Document, td: &Element, stats: Vec<(String, u32)>) {
+    let stat_table = document.create_element("table").unwrap();
+    stat_table.set_class_name("stattable");
+    td.append_child(&stat_table).unwrap();
+    //headers
+    let stat_row = document.create_element("tr").unwrap();
+    stat_table.append_child(&stat_row).unwrap();
+    //let stats: Vec<(String, u32)> = row.get_stats();
+    for stat_fac in stats.clone() {
+        let stat_td = document.create_element("td").unwrap();
+        stat_row.append_child(&stat_td).unwrap();
+        stat_td.set_inner_html(&stat_fac.0);
+    }
+
+    //counts
+    let stat_row = document.create_element("tr").unwrap();
+    stat_table.append_child(&stat_row).unwrap();
+    for stat_fac in stats.clone() {
+        let stat_td = document.create_element("td").unwrap();
+        stat_row.append_child(&stat_td).unwrap();
+
+        stat_td.set_inner_html(&stat_fac.1.to_string());
     }
 }
 
