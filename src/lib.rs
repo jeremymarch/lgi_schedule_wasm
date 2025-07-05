@@ -101,10 +101,10 @@ pub fn create_table2() {
         vec!["ABF", "JM", "EBH"],
     ];
 
-    let lectures = vec![
-        "EBH", "JM", "HH", "EBH", "HH", "JM", "BP", "HH", "JM", "HH", "BP", "EBH", "JM", "EBH",
-        "JM", "BP", "EBH", "BP", "JM", "EBH", "BP", "EBH", "JM",
-    ];
+    // let lectures = vec![
+    //     "EBH", "JM", "HH", "EBH", "HH", "JM", "BP", "HH", "JM", "HH", "BP", "EBH", "JM", "EBH",
+    //     "JM", "BP", "EBH", "BP", "JM", "EBH", "BP", "EBH", "JM",
+    // ];
     let summer = create_summer(start_date, holidays, faculty).unwrap();
 
     let window = web_sys::window().expect("no global `window` exists");
@@ -117,7 +117,7 @@ pub fn create_table2() {
     for row in &summer.days_array {
         if row.date.weekday() == Weekday::Monday {
             table = document.create_element("table").unwrap();
-            table.set_class_name(format!("week-table week{}", week_num).as_str());
+            table.set_class_name(format!("week-table week{week_num}").as_str());
             body.append_child(&table).unwrap();
 
             let tr = document.create_element("tr").unwrap();
@@ -125,7 +125,7 @@ pub fn create_table2() {
 
             let td = document.create_element("td").unwrap();
             tr.append_child(&td).unwrap();
-            td.set_inner_html(format!("Week {}", week_num).as_str());
+            td.set_inner_html(format!("Week {week_num}").as_str());
             let _ = td.set_attribute("colspan", "9");
 
             let tr = document.create_element("tr").unwrap();
@@ -153,7 +153,68 @@ pub fn create_table2() {
         tr.set_class_name(get_weekday(row.date.weekday()).to_lowercase().as_str());
         table.append_child(&tr).unwrap();
 
-        if row.exam.is_some() {
+        if row.day == 1 {
+            for col in 0..8 {
+                let td = document.create_element("td").unwrap();
+                tr.append_child(&td).unwrap();
+                match col {
+                    0 => (),
+                    1 => {
+                        let day = format!(
+                            "{}<br>{}{}",
+                            get_weekday(row.date.weekday()),
+                            row.date.strftime("%B %-d"),
+                            if row.day < 1 {
+                                String::from("")
+                            } else {
+                                format!("<br>Day {}", row.day)
+                            }
+                        );
+                        td.set_inner_html(&day);
+                        td.set_class_name("daycolumn");
+                    }
+                    2 => {
+                        //td.set_class_name("morningoptionalcolumn");
+
+                        td.set_inner_html("Orientation");
+                    }
+                    3 => {
+                        //td.set_class_name("morningoptionalcolumn");
+                        if let Some(s) = row.day_one_lectures.clone() {
+                            let s = format!("Grammar<br>{}", s[0]);
+                            td.set_inner_html(&s);
+                        }
+                    }
+                    4 => {
+                        //td.set_class_name("morningoptionalcolumn");
+                        if let Some(s) = row.day_one_lectures.clone() {
+                            let s = format!("Alphabet<br>{}", s[1]);
+                            td.set_inner_html(&s);
+                        }
+                    }
+                    5 => {
+                        //td.set_class_name("morningoptionalcolumn");
+
+                        td.set_inner_html("Lunch");
+                    }
+                    6 => {
+                        //td.set_class_name("morningoptionalcolumn");
+                        if let Some(s) = row.day_one_lectures.clone() {
+                            let s = format!("Lecture on Accents<br>{}", s[2]);
+                            td.set_inner_html(&s);
+                            let _ = td.set_attribute("colspan", "2");
+                        }
+                    }
+                    7 => {
+                        td.set_class_name("statscolumn");
+                        let v = row.get_stats();
+                        let o = format!("{v:?}");
+                        td.set_inner_html(&o);
+                    }
+                    _ => (),
+                }
+            }
+        } else if row.exam.is_some() {
             for col in 0..6 {
                 match col {
                     0 => {
@@ -166,7 +227,7 @@ pub fn create_table2() {
                         let day = format!(
                             "{}<br>{}{}",
                             get_weekday(row.date.weekday()),
-                            row.date.strftime("%B %-d").to_string(),
+                            row.date.strftime("%B %-d"),
                             if row.day < 1 {
                                 String::from("")
                             } else {
@@ -187,18 +248,30 @@ pub fn create_table2() {
                     3 => {
                         let td = document.create_element("td").unwrap();
                         td.set_class_name("lecturecolumn");
-                        let lecture_str = format!("{}<br>{}", row.lecture_title, row.lecture);
-                        td.set_inner_html(&lecture_str);
+                        if let Some(lecture_title) = row.lecture_title.as_ref()
+                            && let Some(lecture) = row.lecture.as_ref()
+                        {
+                            let lecture_str = format!("{lecture_title}<br>{lecture}");
+                            td.set_inner_html(&lecture_str);
+                        }
                         tr.append_child(&td).unwrap();
                     }
                     4 => {
                         let td = document.create_element("td").unwrap();
-                        let v = format!("Vocabulary Notes<br>{}", row.voc_notes.clone());
-                        td.set_inner_html(&v);
+                        if let Some(voc) = row.voc_notes.as_ref() {
+                            let v = format!("Vocabulary Notes<br>{voc}");
+                            td.set_inner_html(&v);
+                        }
                         tr.append_child(&td).unwrap();
                     }
                     5 => {
                         let td = document.create_element("td").unwrap();
+
+                        td.set_class_name("statscolumn");
+                        let v = row.get_stats();
+                        let o = format!("{v:?}");
+                        td.set_inner_html(&o);
+
                         tr.append_child(&td).unwrap();
                     }
 
@@ -212,13 +285,15 @@ pub fn create_table2() {
                 match col {
                     0 => {
                         td.set_class_name("quizcolumn");
-                        td.set_inner_html(row.quiz_grader.as_str());
+                        if let Some(quiz) = row.quiz_grader.as_ref() {
+                            td.set_inner_html(quiz);
+                        }
                     }
                     1 => {
                         let day = format!(
                             "{}<br>{}{}",
                             get_weekday(row.date.weekday()),
-                            row.date.strftime("%B %-d").to_string(),
+                            row.date.strftime("%B %-d"),
                             if row.day < 1 {
                                 String::from("")
                             } else {
@@ -230,21 +305,21 @@ pub fn create_table2() {
                     }
                     2 => {
                         td.set_class_name("morningoptionalcolumn");
-                        if let Some(s) = row.morning_optional.clone() {
-                            let s = format!("(optional)<br>{}", s);
+                        if let Some(s) = row.morning_optional.as_ref() {
+                            let s = format!("(optional)<br>{s}");
                             td.set_inner_html(&s);
                         }
                     }
                     3 => {
                         td.set_class_name("drill1column");
-                        td.set_inner_html(get_drill_col(&row.drill1).as_str());
+                        td.set_inner_html(get_drill_col(&row.get_drill1()).as_str());
                     }
                     // quizzes
                     // find self-correcting
                     // 7-10 schedule
                     4 => {
                         td.set_class_name("drill2column");
-                        td.set_inner_html(get_drill_col(&row.drill2).as_str());
+                        td.set_inner_html(get_drill_col(&row.get_drill2()).as_str());
                     }
                     5 => {
                         td.set_class_name("noonoptionalcolumn");
@@ -256,31 +331,41 @@ pub fn create_table2() {
                         ));
                     }
                     6 => {
-                        if row.friday_review1.len() > 0 {
+                        if !row.friday_review1.is_empty() {
                             td.set_class_name("fridayreviewcolumn1");
                             td.set_inner_html(
                                 get_review_col(&row.friday_review1, row.day).as_str(),
                             );
                         } else {
                             td.set_class_name("lecturecolumn");
-                            let lecture_str = format!("{}<br>{}", row.lecture_title, row.lecture);
-                            td.set_inner_html(&lecture_str);
+                            if let Some(lecture_title) = row.lecture_title.as_ref()
+                                && let Some(lecture) = row.lecture.as_ref()
+                            {
+                                let lecture_str = format!("{lecture_title}<br>{lecture}");
+                                td.set_inner_html(&lecture_str);
+                            }
                         }
                     }
                     7 => {
-                        if row.friday_review2.len() > 0 {
+                        if !row.friday_review2.is_empty() {
                             td.set_class_name("fridayreviewcolumn1");
                             td.set_inner_html(
                                 get_review_col(&row.friday_review2, row.day).as_str(),
                             );
                         } else {
                             td.set_class_name("vocnotescolumn");
-                            let v = format!("Vocabulary Notes<br>{}", row.voc_notes.clone());
-                            td.set_inner_html(&v);
+                            if let Some(voc) = row.voc_notes.as_ref() {
+                                let v = format!("Vocabulary Notes<br>{voc}");
+                                td.set_inner_html(&v);
+                            }
                         }
                     }
-                    8 => td.set_class_name("statscolumn"),
-
+                    8 => {
+                        td.set_class_name("statscolumn");
+                        let v = row.get_stats();
+                        let o = format!("{v:?}");
+                        td.set_inner_html(&o);
+                    }
                     _ => (),
                 }
                 if col == 2 && row.day < 1 {
@@ -305,17 +390,17 @@ fn get_noon_optional_col(
     if let Some(t) = title1
         && let Some(f) = fac1
     {
-        title = format!("(optional)<br>{} - {}", t, f);
+        title = format!("(optional)<br>{t} - {f}");
     }
     if let Some(t) = title2
         && let Some(f) = fac2
     {
-        title.push_str(format!("<br>{} - {}", t, f).as_str());
+        title.push_str(format!("<br>{t} - {f}").as_str());
     }
     title
 }
 
-fn get_drill_col(fac: &Vec<String>) -> String {
+fn get_drill_col(fac: &[String]) -> String {
     match fac.len() {
         2 => format!("E - {}<br>F - {}", fac[0], fac[1]),
         3 => format!("E - {}<br>F/G - {}<br>H - {}", fac[0], fac[1], fac[2]),
@@ -323,7 +408,7 @@ fn get_drill_col(fac: &Vec<String>) -> String {
     }
 }
 
-fn get_review_col(fac: &Vec<String>, day: u32) -> String {
+fn get_review_col(fac: &[String], day: u32) -> String {
     if day < 15 {
         format!("Review<br>E/F - {}<br>G/H - {}", fac[0], fac[1])
     } else {
