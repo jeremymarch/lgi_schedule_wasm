@@ -83,9 +83,10 @@ pub fn create_table() {
 
 #[wasm_bindgen]
 pub fn create_table2() {
-    //let start_date = "2025-06-09";
     //let juneteenth = "2025-06-19 08:30[America/New_York]".parse().unwrap();
     //let julyfour = "2025-07-04 08:30[America/New_York]".parse().unwrap();
+
+    let start_date = "2025-06-09";
     let holidays = vec!["2025-06-19", "2025-07-04"];
     let faculty = vec![
         vec!["BP", "JM", "HH", "EBH"],
@@ -101,17 +102,18 @@ pub fn create_table2() {
         vec!["ABF", "JM", "EBH"],
     ];
 
+    let lectures = vec![
+        "EBH", "JM", "HH", "EBH", "HH", "JM", "BP", "HH", "JM", "HH", "BP", "EBH", "JM", "EBH",
+        "JM", "BP", "EBH", "BP", "JM", "EBH", "BP", "EBH", "JM",
+    ];
+
     let p = Params {
         faculty,
-        start_date: "2025-06-09",
+        start_date,
         holidays,
-        lecture_assignments: vec![],
+        lecture_assignments: lectures,
     };
 
-    // let lectures = vec![
-    //     "EBH", "JM", "HH", "EBH", "HH", "JM", "BP", "HH", "JM", "HH", "BP", "EBH", "JM", "EBH",
-    //     "JM", "BP", "EBH", "BP", "JM", "EBH", "BP", "EBH", "JM",
-    // ];
     let summer = create_summer(&p).unwrap();
 
     let window = web_sys::window().expect("no global `window` exists");
