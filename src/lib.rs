@@ -19,29 +19,23 @@ pub fn create_table() {
     let start_date = "2025-06-09";
     let holidays = vec!["2025-06-19", "2025-07-04"];
     let faculty = vec![
-        vec!["BP", "JM", "HH", "EBH"],
-        vec!["BP", "JM", "HH", "EBH"],
-        vec!["BP", "JM", "HH", "EBH"],
-        vec!["BP", "JM", "EBH"],
-        vec!["BP", "JM", "EBH"],
-        vec!["BP", "JM", "EBH"],
+        vec!["BP", "EBH", "HH", "JM"],
+        vec!["HH", "JM", "EBH", "BP"],
+        vec!["EBH", "JM", "HH", "BP"],
+        vec!["EBH", "JM", "BP"],
+        vec!["JM", "EBH", "BP"],
+        vec!["EBH", "JM", "BP"],
         vec!["ABF", "JM", "EBH"],
         vec!["ABF", "JM", "EBH"],
         vec!["ABF", "JM", "EBH"],
         vec!["ABF", "JM", "EBH"],
         vec!["ABF", "JM", "EBH"],
-    ];
-
-    let lectures = vec![
-        "EBH", "JM", "HH", "EBH", "HH", "JM", "BP", "HH", "JM", "HH", "BP", "EBH", "JM", "EBH",
-        "JM", "BP", "EBH", "BP", "JM", "EBH", "BP", "EBH", "JM",
     ];
 
     let p = Params {
         faculty,
         start_date,
         holidays,
-        lecture_assignments: lectures,
     };
 
     let summer = create_summer(&p).unwrap();
@@ -52,11 +46,10 @@ pub fn create_table() {
 
     let mut table = document.create_element("table").unwrap();
 
-    let mut week_num = 1;
     for row in &summer.days {
         if row.date.weekday() == Weekday::Monday {
             table = document.create_element("table").unwrap();
-            table.set_class_name(format!("week-table week{week_num}").as_str());
+            table.set_class_name(format!("week-table week{}", row.week).as_str());
             body.append_child(&table).unwrap();
 
             let tr = document.create_element("tr").unwrap();
@@ -64,7 +57,7 @@ pub fn create_table() {
 
             let td = document.create_element("td").unwrap();
             tr.append_child(&td).unwrap();
-            td.set_inner_html(format!("Week {week_num}").as_str());
+            td.set_inner_html(format!("Week {}", row.week).as_str());
             let _ = td.set_attribute("colspan", "9");
 
             let tr = document.create_element("tr").unwrap();
@@ -85,8 +78,6 @@ pub fn create_table() {
                     _ => (),
                 }
             }
-
-            week_num += 1;
         }
         let tr = document.create_element("tr").unwrap();
         tr.set_class_name(get_weekday(row.date.weekday()).to_lowercase().as_str());
@@ -114,7 +105,6 @@ pub fn create_table() {
                     }
                     2 => {
                         //td.set_class_name("morningoptionalcolumn");
-
                         td.set_inner_html("Orientation");
                     }
                     3 => {
@@ -133,7 +123,6 @@ pub fn create_table() {
                     }
                     5 => {
                         //td.set_class_name("morningoptionalcolumn");
-
                         td.set_inner_html("Lunch");
                     }
                     6 => {
@@ -206,13 +195,8 @@ pub fn create_table() {
                     }
                     5 => {
                         let td = document.create_element("td").unwrap();
-
                         td.set_class_name("statscolumn");
-                        // let v = row.get_stats();
-                        // let o = format!("{v:?}");
-                        // td.set_inner_html(&o);
                         get_stat_table(&document, &td, row.get_stats());
-
                         tr.append_child(&td).unwrap();
                     }
 
@@ -255,9 +239,6 @@ pub fn create_table() {
                         td.set_class_name("drill1column");
                         td.set_inner_html(get_drill_col(&row.get_drill1()).as_str());
                     }
-                    // quizzes
-                    // find self-correcting
-                    // 7-10 schedule
                     4 => {
                         td.set_class_name("drill2column");
                         td.set_inner_html(get_drill_col(&row.get_drill2()).as_str());
@@ -332,12 +313,21 @@ pub fn create_table() {
             let seq_td = document.create_element("td").unwrap();
             seq_row.append_child(&seq_td).unwrap();
             seq_td.set_inner_html("");
+
+            if seqs[0].1.len() == 10 {
+                let seq_td = document.create_element("td").unwrap();
+                seq_row.append_child(&seq_td).unwrap();
+                seq_td.set_inner_html("M1");
+                let seq_td = document.create_element("td").unwrap();
+                seq_row.append_child(&seq_td).unwrap();
+                seq_td.set_inner_html("M2");
+            }
             let seq_td = document.create_element("td").unwrap();
             seq_row.append_child(&seq_td).unwrap();
-            seq_td.set_inner_html("TU1");
+            seq_td.set_inner_html("T1");
             let seq_td = document.create_element("td").unwrap();
             seq_row.append_child(&seq_td).unwrap();
-            seq_td.set_inner_html("TU2");
+            seq_td.set_inner_html("T2");
             let seq_td = document.create_element("td").unwrap();
             seq_row.append_child(&seq_td).unwrap();
             seq_td.set_inner_html("W1");

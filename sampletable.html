@@ -1,0 +1,131 @@
+<html>
+  <head>
+    <style>
+      section {
+        margin: 20px auto;
+        width: 80%;
+      }
+      header,
+      .row {
+        display: flex; /* aligns all child elements (flex items) in a row */
+      }
+
+      .col {
+        flex: 0 0 11.1%; /* distributes space on the line equally among items */
+        border: 1px solid black;
+        text-align: center;
+        display: table-cell;
+        padding:8px
+      }
+
+      .col1 {
+          flex: 2 1 77.8%;
+        border: 1px solid black;
+        text-align: center;
+        display: table-cell;
+        padding:8px;
+      }
+
+      .col2 {
+          flex: 1 2 5.6%;
+        border: 1px solid black;
+        text-align: center;
+        display: table-cell;
+        padding:8px;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <header>
+        <div class="col">quiz</div>
+        <div class="col"></div>
+        <div class="col">8:30 a.m.</div>
+        <div class="col">9:30 a.m.</div>
+        <div class="col">10:40 a.m.</div>
+        <div class="col">12:15 p.m.</div>
+        <div class="col">1:00 p.m. ----------</div>
+        <div class="col">---------- 4:00 p.m.</div>
+        <div class="col">stats</div>
+      </header>
+      <div class="row">
+        <div class="col">1</div>
+        <div class="col">Monday<br>
+        July 14<br>
+        Day 24</div>
+        <div class="col">3</div>
+        <div class="col">4</div>
+        <div class="col">5</div>
+        <div class="col">6</div>
+        <div class="col">7</div>
+        <div class="col">8</div>
+        <div class="col">9</div>
+      </div>
+      <div class="row">
+        <div class="col">1</div>
+        <div class="col">Tuesday<br>
+        July 15<br>
+        Day 25</div>
+        <div class="col">3</div>
+        <div class="col">4</div>
+        <div class="col">5</div>
+        <div class="col">6</div>
+        <div class="col">7</div>
+        <div class="col">8</div>
+        <div class="col">9</div>
+      </div>
+      <div class="row">
+        <div class="col">1</div>
+        <div class="col">Wednesday<br>
+        July 16<br>
+        Day 26</div>
+        <div class="col">3</div>
+        <div class="col">4</div>
+        <div class="col">5</div>
+        <div class="col">6</div>
+        <div class="col">7</div>
+        <div class="col">8</div>
+        <div class="col">9</div>
+      </div>
+      <div class="row">
+        <div class="col">1</div>
+        <div class="col">Thursday<br>
+        July 17<br>
+        Day 27</div>
+        <div class="col">3</div>
+        <div class="col">4</div>
+        <div class="col">5</div>
+        <div class="col">6</div>
+        <div class="col">7</div>
+        <div class="col">8</div>
+        <div class="col">9</div>
+      </div>
+      </div>
+      <div class="row">
+        <div class="col">1</div>
+        <div class="col">Friday<br>
+        July 18<br>
+        Day 28</div>
+        <div class="col">3</div>
+        <div class="col">4</div>
+        <div class="col">5</div>
+        <div class="col2">6</div>
+        <div class="col">7</div>
+        <div class="col">8</div>
+        <div class="col2">9</div>
+        <div class="col">10</div>
+      </div>
+      <div class="row">
+        <div class="col">1</div>
+        <div class="col">Saturday<br>
+        July 19</div>
+        <div class="col1">3</div>
+      </div>
+      <div class="row">
+        <div class="col">1</div>
+        <div class="col">Sunday<br>
+        July 20</div>
+        <div class="col1">3</div>
+    </section>
+  </body>
+</html>
