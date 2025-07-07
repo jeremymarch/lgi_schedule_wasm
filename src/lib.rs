@@ -7,84 +7,12 @@ use web_sys::Element;
 // Called when the Wasm module is instantiated
 #[wasm_bindgen(start)]
 fn main() -> Result<(), JsValue> {
-    // Use `web_sys`'s global `window` function to get a handle on the global
-    // window object.
-    // let window = web_sys::window().expect("no global `window` exists");
-    // let document = window.document().expect("should have a document on window");
-    // let body = document.body().expect("document should have a body");
-
-    // Manufacture the element we're gonna append
-    // let val = document.create_element("p")?;
-    // val.set_inner_html("Hello from Rust!");
-    // body.append_child(&val)?;
-
-    create_table2();
-
+    create_table();
     Ok(())
 }
-/*
+
 #[wasm_bindgen]
 pub fn create_table() {
-    let window = web_sys::window().expect("no global `window` exists");
-    let document = window.document().expect("should have a document on window");
-    let body = document.body().expect("document should have a body");
-
-    let days = vec![
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
-    ];
-
-    // Manufacture the element we're gonna append
-    let table = document.create_element("table").unwrap();
-    table.set_class_name("week-table week1");
-    for row in 0..9 {
-        let tr = document.create_element("tr").unwrap();
-        table.append_child(&tr).unwrap();
-        for col in 0..9 {
-            let td = document.create_element("td").unwrap();
-            tr.append_child(&td).unwrap();
-
-            match row {
-                0 => match col {
-                    1 => {
-                        td.set_inner_html("Week 1");
-                        let _ = td.set_attribute("colspan", "9");
-                        break;
-                    }
-                    _ => (),
-                },
-                1 => match col {
-                    0 => td.set_inner_html("quiz"),
-                    1 => td.set_inner_html(""),
-                    2 => td.set_inner_html("8:30 a.m."),
-                    3 => td.set_inner_html("9:30 a.m."),
-                    4 => td.set_inner_html("10:40 a.m."),
-                    5 => td.set_inner_html("12:15 a.m."),
-                    6 => td.set_inner_html("1:00 p.m --------"),
-                    7 => td.set_inner_html("---------- 4:00 p. m."),
-                    8 => td.set_inner_html("stats"),
-                    _ => (),
-                },
-                _ => {
-                    if row > 1 && col == 1 {
-                        td.set_inner_html(days[row - 2]);
-                    }
-                }
-            }
-        }
-    }
-
-    body.append_child(&table).unwrap();
-}
-*/
-
-#[wasm_bindgen]
-pub fn create_table2() {
     //let juneteenth = "2025-06-19 08:30[America/New_York]".parse().unwrap();
     //let julyfour = "2025-07-04 08:30[America/New_York]".parse().unwrap();
 
@@ -375,34 +303,7 @@ pub fn create_table2() {
                     }
                     8 => {
                         td.set_class_name("statscolumn");
-                        // let v = row.get_stats();
-                        // let o = format!("{v:?}");
-                        // td.set_inner_html(&o);
-                        //
                         get_stat_table(&document, &td, row.get_stats());
-
-                        // let stat_table = document.create_element("table").unwrap();
-                        // stat_table.set_class_name("stattable");
-                        // td.append_child(&stat_table).unwrap();
-                        // //headers
-                        // let stat_row = document.create_element("tr").unwrap();
-                        // stat_table.append_child(&stat_row).unwrap();
-                        // let stats: Vec<(String, u32)> = row.get_stats();
-                        // for stat_fac in stats.clone() {
-                        //     let stat_td = document.create_element("td").unwrap();
-                        //     stat_row.append_child(&stat_td).unwrap();
-                        //     stat_td.set_inner_html(&stat_fac.0);
-                        // }
-
-                        // //counts
-                        // let stat_row = document.create_element("tr").unwrap();
-                        // stat_table.append_child(&stat_row).unwrap();
-                        // for stat_fac in stats.clone() {
-                        //     let stat_td = document.create_element("td").unwrap();
-                        //     stat_row.append_child(&stat_td).unwrap();
-
-                        //     stat_td.set_inner_html(&stat_fac.1.to_string());
-                        // }
                     }
                     _ => (),
                 }
@@ -418,6 +319,55 @@ pub fn create_table2() {
                     tr.append_child(&td).unwrap();
 
                     break;
+                }
+            }
+        }
+        if row.date.weekday() == Weekday::Sunday {
+            let seqs = summer.get_seqs(row.week);
+            let seq_table = document.create_element("table").unwrap();
+            seq_table.set_class_name("seqtable");
+            body.append_child(&seq_table).unwrap();
+            let seq_row = document.create_element("tr").unwrap();
+            seq_table.append_child(&seq_row).unwrap();
+            let seq_td = document.create_element("td").unwrap();
+            seq_row.append_child(&seq_td).unwrap();
+            seq_td.set_inner_html("");
+            let seq_td = document.create_element("td").unwrap();
+            seq_row.append_child(&seq_td).unwrap();
+            seq_td.set_inner_html("TU1");
+            let seq_td = document.create_element("td").unwrap();
+            seq_row.append_child(&seq_td).unwrap();
+            seq_td.set_inner_html("TU2");
+            let seq_td = document.create_element("td").unwrap();
+            seq_row.append_child(&seq_td).unwrap();
+            seq_td.set_inner_html("W1");
+            let seq_td = document.create_element("td").unwrap();
+            seq_row.append_child(&seq_td).unwrap();
+            seq_td.set_inner_html("W2");
+            let seq_td = document.create_element("td").unwrap();
+            seq_row.append_child(&seq_td).unwrap();
+            seq_td.set_inner_html("TH1");
+            let seq_td = document.create_element("td").unwrap();
+            seq_row.append_child(&seq_td).unwrap();
+            seq_td.set_inner_html("TH2");
+            let seq_td = document.create_element("td").unwrap();
+            seq_row.append_child(&seq_td).unwrap();
+            seq_td.set_inner_html("F1");
+            let seq_td = document.create_element("td").unwrap();
+            seq_row.append_child(&seq_td).unwrap();
+            seq_td.set_inner_html("F2");
+
+            for rows in seqs.clone() {
+                let seq_row = document.create_element("tr").unwrap();
+                seq_table.append_child(&seq_row).unwrap();
+                let seq_td = document.create_element("td").unwrap();
+                seq_row.append_child(&seq_td).unwrap();
+                seq_td.set_inner_html(&rows.0);
+
+                for cols in rows.1 {
+                    let seq_td = document.create_element("td").unwrap();
+                    seq_row.append_child(&seq_td).unwrap();
+                    seq_td.set_inner_html(&cols);
                 }
             }
         }
