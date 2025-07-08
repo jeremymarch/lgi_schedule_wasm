@@ -50,19 +50,24 @@ pub fn create_table() {
     for row in &summer.days {
         if row.date.weekday() == Weekday::Monday {
             week_div = document.create_element("div").unwrap();
+
+            let week_div_title = document.create_element("div").unwrap();
+            week_div_title.set_class_name("week-div-title");
+            week_div_title.set_inner_html(format!("Week {}", row.week).as_str());
+            week_div.append_child(&week_div_title).unwrap();
+
             week_div.set_class_name(format!("week-div week{}", row.week).as_str());
             table = document.create_element("table").unwrap();
             table.set_class_name("week-table");
             week_div.append_child(&table).unwrap();
             body.append_child(&week_div).unwrap();
 
-            let tr = document.create_element("tr").unwrap();
-            table.append_child(&tr).unwrap();
-
-            let td = document.create_element("td").unwrap();
-            tr.append_child(&td).unwrap();
-            td.set_inner_html(format!("Week {}", row.week).as_str());
-            let _ = td.set_attribute("colspan", "9");
+            // let tr = document.create_element("tr").unwrap();
+            // table.append_child(&tr).unwrap();
+            // let td = document.create_element("td").unwrap();
+            // tr.append_child(&td).unwrap();
+            // td.set_inner_html(format!("Week {}", row.week).as_str());
+            // let _ = td.set_attribute("colspan", "9");
 
             let tr = document.create_element("tr").unwrap();
             table.append_child(&tr).unwrap();
@@ -70,15 +75,21 @@ pub fn create_table() {
                 let td = document.create_element("td").unwrap();
                 tr.append_child(&td).unwrap();
                 match col {
-                    0 => td.set_inner_html("quiz"),
-                    1 => td.set_inner_html(""),
-                    2 => td.set_inner_html("8:30 a.m."),
-                    3 => td.set_inner_html("9:30 a.m."),
-                    4 => td.set_inner_html("10:40 a.m."),
-                    5 => td.set_inner_html("12:15 p.m."),
-                    6 => td.set_inner_html("1:00 p.m. ---------- "),
-                    7 => td.set_inner_html(" ---------- 4:00 p.m."),
-                    8 => td.set_inner_html("stats"),
+                    0 => td.set_inner_html(""),
+                    1 => td.set_inner_html("8:30 a.m."),
+                    2 => td.set_inner_html("9:30 a.m."),
+                    3 => td.set_inner_html("10:40 a.m."),
+                    4 => td.set_inner_html("12:15 p.m."),
+                    5 => td.set_inner_html("1:00 p.m. ---------- "),
+                    6 => td.set_inner_html(" ---------- 4:00 p.m."),
+                    7 => {
+                        td.set_inner_html("quiz");
+                        td.set_class_name("quizcolumn");
+                    }
+                    8 => {
+                        td.set_inner_html("stats");
+                        td.set_class_name("statscolumn");
+                    }
                     _ => (),
                 }
             }
@@ -92,8 +103,7 @@ pub fn create_table() {
                 let td = document.create_element("td").unwrap();
                 tr.append_child(&td).unwrap();
                 match col {
-                    0 => (),
-                    1 => {
+                    0 => {
                         let day = format!(
                             "{}<br>{}{}",
                             get_weekday(row.date.weekday()),
@@ -107,29 +117,29 @@ pub fn create_table() {
                         td.set_inner_html(&day);
                         td.set_class_name("daycolumn");
                     }
-                    2 => {
+                    1 => {
                         //td.set_class_name("morningoptionalcolumn");
                         td.set_inner_html("Orientation");
                     }
-                    3 => {
+                    2 => {
                         //td.set_class_name("morningoptionalcolumn");
                         if let Some(s) = row.day_one_lectures.clone() {
                             let s = format!("Grammar<br>{}", s[0]);
                             td.set_inner_html(&s);
                         }
                     }
-                    4 => {
+                    3 => {
                         //td.set_class_name("morningoptionalcolumn");
                         if let Some(s) = row.day_one_lectures.clone() {
                             let s = format!("Alphabet<br>{}", s[1]);
                             td.set_inner_html(&s);
                         }
                     }
-                    5 => {
+                    4 => {
                         //td.set_class_name("morningoptionalcolumn");
                         td.set_inner_html("Lunch");
                     }
-                    6 => {
+                    5 => {
                         //td.set_class_name("morningoptionalcolumn");
                         if let Some(s) = row.day_one_lectures.clone() {
                             let s = format!("Lecture on Accents<br>{}", s[2]);
@@ -137,6 +147,7 @@ pub fn create_table() {
                             let _ = td.set_attribute("colspan", "2");
                         }
                     }
+                    6 => td.set_class_name("quizcolumn"),
                     7 => {
                         td.set_class_name("statscolumn");
                         get_stat_table(&document, &td, row.get_stats());
@@ -152,10 +163,6 @@ pub fn create_table() {
                 match col {
                     0 => {
                         let td = document.create_element("td").unwrap();
-                        tr.append_child(&td).unwrap();
-                    }
-                    1 => {
-                        let td = document.create_element("td").unwrap();
 
                         let day = format!(
                             "{}<br>{}{}",
@@ -172,13 +179,13 @@ pub fn create_table() {
 
                         tr.append_child(&td).unwrap();
                     }
-                    2 => {
+                    1 => {
                         let td = document.create_element("td").unwrap();
                         let _ = td.set_attribute("colspan", "4");
                         td.set_inner_html("JM");
                         tr.append_child(&td).unwrap();
                     }
-                    3 => {
+                    2 => {
                         let td = document.create_element("td").unwrap();
                         td.set_class_name("lecturecolumn");
                         if let Some(lecture_title) = row.lecture_title.as_ref()
@@ -189,12 +196,17 @@ pub fn create_table() {
                         }
                         tr.append_child(&td).unwrap();
                     }
-                    4 => {
+                    3 => {
                         let td = document.create_element("td").unwrap();
                         if let Some(voc) = row.voc_notes.as_ref() {
                             let v = format!("Vocabulary Notes<br>{voc}");
                             td.set_inner_html(&v);
                         }
+                        tr.append_child(&td).unwrap();
+                    }
+                    4 => {
+                        let td = document.create_element("td").unwrap();
+                        td.set_class_name("quizcolumn");
                         tr.append_child(&td).unwrap();
                     }
                     5 => {
@@ -203,7 +215,6 @@ pub fn create_table() {
                         get_stat_table(&document, &td, row.get_stats());
                         tr.append_child(&td).unwrap();
                     }
-
                     _ => (),
                 }
             }
@@ -213,12 +224,6 @@ pub fn create_table() {
                 tr.append_child(&td).unwrap();
                 match col {
                     0 => {
-                        td.set_class_name("quizcolumn");
-                        if let Some(quiz) = row.quiz_grader.as_ref() {
-                            td.set_inner_html(quiz);
-                        }
-                    }
-                    1 => {
                         let day = format!(
                             "{}<br>{}{}",
                             get_weekday(row.date.weekday()),
@@ -232,22 +237,22 @@ pub fn create_table() {
                         td.set_inner_html(&day);
                         td.set_class_name("daycolumn");
                     }
-                    2 => {
+                    1 => {
                         td.set_class_name("morningoptionalcolumn");
                         if let Some(s) = row.morning_optional.as_ref() {
                             let s = format!("(optional)<br>{s}");
                             td.set_inner_html(&s);
                         }
                     }
-                    3 => {
+                    2 => {
                         td.set_class_name("drill1column");
                         td.set_inner_html(get_drill_col(&row.get_drill1()).as_str());
                     }
-                    4 => {
+                    3 => {
                         td.set_class_name("drill2column");
                         td.set_inner_html(get_drill_col(&row.get_drill2()).as_str());
                     }
-                    5 => {
+                    4 => {
                         td.set_class_name("noonoptionalcolumn");
                         td.set_inner_html(&get_noon_optional_col(
                             &row.noon_optional1_title,
@@ -256,7 +261,7 @@ pub fn create_table() {
                             &row.noon_optional2,
                         ));
                     }
-                    6 => {
+                    5 => {
                         if !row.friday_review1.is_empty() {
                             td.set_class_name("fridayreviewcolumn1");
                             td.set_inner_html(
@@ -272,7 +277,7 @@ pub fn create_table() {
                             }
                         }
                     }
-                    7 => {
+                    6 => {
                         if !row.friday_review2.is_empty() {
                             td.set_class_name("fridayreviewcolumn1");
                             td.set_inner_html(
@@ -286,17 +291,27 @@ pub fn create_table() {
                             }
                         }
                     }
+                    7 => {
+                        td.set_class_name("quizcolumn");
+                        if let Some(quiz) = row.quiz_grader.as_ref() {
+                            td.set_inner_html(quiz);
+                        }
+                    }
                     8 => {
                         td.set_class_name("statscolumn");
                         get_stat_table(&document, &td, row.get_stats());
                     }
                     _ => (),
                 }
-                if col == 2 && row.day < 1 {
+                if col == 1 && row.day < 1 {
                     let _ = td.set_attribute("colspan", "6");
                     if let Some(o) = row.other.clone() {
                         td.set_inner_html(&o);
                     }
+
+                    let td = document.create_element("td").unwrap();
+                    td.set_class_name("quizcolumn");
+                    tr.append_child(&td).unwrap();
 
                     let td = document.create_element("td").unwrap();
                     td.set_class_name("statscolumn");
