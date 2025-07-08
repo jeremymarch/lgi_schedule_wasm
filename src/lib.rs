@@ -45,12 +45,16 @@ pub fn create_table() {
     let body = document.body().expect("document should have a body");
 
     let mut table = document.create_element("table").unwrap();
+    let mut week_div = document.create_element("div").unwrap();
 
     for row in &summer.days {
         if row.date.weekday() == Weekday::Monday {
+            week_div = document.create_element("div").unwrap();
+            week_div.set_class_name(format!("week-div week{}", row.week).as_str());
             table = document.create_element("table").unwrap();
-            table.set_class_name(format!("week-table week{}", row.week).as_str());
-            body.append_child(&table).unwrap();
+            table.set_class_name("week-table");
+            week_div.append_child(&table).unwrap();
+            body.append_child(&week_div).unwrap();
 
             let tr = document.create_element("tr").unwrap();
             table.append_child(&tr).unwrap();
@@ -307,7 +311,7 @@ pub fn create_table() {
             let seqs = summer.get_seqs(row.week);
             let seq_table = document.create_element("table").unwrap();
             seq_table.set_class_name("seqtable");
-            body.append_child(&seq_table).unwrap();
+            week_div.append_child(&seq_table).unwrap();
             let seq_row = document.create_element("tr").unwrap();
             seq_table.append_child(&seq_row).unwrap();
             let seq_td = document.create_element("td").unwrap();
